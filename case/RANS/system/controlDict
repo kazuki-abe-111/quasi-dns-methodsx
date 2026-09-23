@@ -1,0 +1,349 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  plus                                  |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+libs
+(
+//    "controlledTemperatureProfile.so"
+//    "libIOFunctionObjects.so"
+//    "libcloudFunctionObjects.so"
+    "libfieldFunctionObjects.so"
+    "libforces.so"
+//    "libFVFunctionObjects.so"
+//    "libjobControl.so"
+//    "libsystemCall.so"
+    "libutilityFunctionObjects.so"
+);
+
+
+application     reactingFoam;
+
+//startFrom       startTime;
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         5.0;
+
+deltaT          1e-4;
+
+writeControl    adjustableRunTime;
+
+writeInterval   0.01;
+//writeInterval   0.005;
+//writeInterval   0.002;
+//writeInterval   0.0001;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+adjustTimeStep  yes;
+
+maxCo           0.9;
+//maxCo           0.01;
+
+functions
+{
+    probes
+    {
+        type probes;
+        enabled true;
+        writeControl timeStep;
+        writeInterval 10;
+        probeLocations
+        (
+            ( 0 0.03 0 )
+            ( 0.05 0 0 )
+            ( 0.103 0 0 )
+            ( 0.103 0.01 0 )
+            ( 0.203 0 0 )
+            ( 0.203 0.01 0 )
+            ( 0.103 0.005 0 )
+            ( 0.103 0.015 0 )
+            ( 0.203 0.005 0 )
+            ( 0.203 0.015 0 )
+            ( 0.503 0 0 )
+            ( 0.503 0.005 0 )
+            ( 0.503 0.01 0 )
+            ( 0.503 0.015 0 ) 
+        );
+        fields
+        (
+            U p T
+        );
+     }
+
+    fieldAverage
+    {
+        type fieldAverage;
+        enabled true;
+        writeControl outputTime;
+        writeInterval 1;
+        fields
+        (
+            T
+            {
+                mean on;
+                prime2Mean on;
+                base time;
+            }
+            U
+            {
+                mean on;
+                prime2Mean on;
+                base time;
+            }
+            Qdot
+            {
+                mean on;
+                prime2Mean on;
+                base time;
+            }
+            CH4
+            {
+                mean on;
+                prime2Mean on;
+                base time;
+            }
+            p
+            {
+                mean on;
+                prime2Mean on;
+                base time;
+            }
+        );
+
+        restartOnRestart    true;
+
+    }
+
+    volAverage
+    {
+        type volFieldValue;
+        enabled true;
+        writeControl timeStep;
+        writeInterval 10;
+	log true;
+	writeFields false;
+	regionType all;	        
+	operation volAverage;
+	fields
+	(
+	    T U Qdot CH4 O2 CO2 H2O p
+	);
+    }
+
+//    nearExitVolAverage
+//    {
+//        type volFieldValue;
+//        enabled true;
+//        writeControl timeStep;
+//        writeInterval 1;
+//        log true;
+//        writeFields false;
+//        regionType cellZone;
+//        name nearExitZone;	        
+//        operation volAverage;
+//        fields
+//        (
+//           T U Qdot CH4 O2 CO2 H2O p
+//        );
+//    }
+
+    inlet_air_Flowrate
+    {
+        type surfaceFieldValue;
+        fields (phi);
+        writeFields false;
+        regionType patch;
+        operation sum;
+        name inlet_air;
+        WriteControl timeStep;
+        WriteInterval 10;
+    } 
+
+    inlet_fuel_Flowrate
+    {
+        type surfaceFieldValue;
+        fields (phi);
+        writeFields false;
+        regionType patch;
+        operation sum;
+        name inlet_fuel;
+        writeControl timeStep;
+        outputInterval 10;
+    }
+
+    outlet_Flowrate
+    {
+        type surfaceFieldValue;
+        fields (phi);
+        writeFields false;
+        regionType patch;
+        operation sum;
+        name outlet;
+        writeControl timeStep;
+        writeInterval 10;
+    }
+
+    residuals
+    {
+        type residuals;
+        enabled true;
+        writeControl timeStep;
+        writeInterval 10;
+        fields (p h CH4 O2 CO2 H2O);
+    }
+
+    airholeFlux
+    {
+        type             surfaceFieldValue;
+
+        enabled          true;
+        writeControl     timeStep;
+        writeInterval    10;
+        writeFields      false;
+
+        name myName;
+
+        // regionType: patch/faceZone/sampledSurface
+        regionType sampledSurface;
+
+        sampledSurfaceDict
+        {
+            type                  plane;
+            planeType             pointAndNormal;
+            pointAndNormalDict
+            {
+                point  (0.03 0 0);
+                normal (1 0 0);
+            };
+            interpolate false;
+        }
+
+        // Operation: areaAverage/sum/weightedAverage/...
+        operation    areaNormalIntegrate;
+        fields
+        (
+            U
+        );
+    }
+
+    nearExitFlux
+    {
+        type             surfaceFieldValue;
+
+        enabled          true;
+        writeControl     timeStep;
+        writeInterval    10;
+        writeFields      false;
+
+        name myName;
+
+        // regionType: patch/faceZone/sampledSurface
+        regionType sampledSurface;
+
+        sampledSurfaceDict
+        {
+            type                  plane;
+            planeType             pointAndNormal;
+            pointAndNormalDict
+            {
+                point  (0.503 0 0);
+                normal (1 0 0);
+            };
+            interpolate false;
+        }
+
+        // Operation: areaAverage/sum/weightedAverage/...
+        operation    areaNormalIntegrate;
+        fields
+        (
+            U
+        );
+    }
+
+    nearExitFractions
+    {
+        type             surfaceFieldValue;
+
+        enabled          true;
+        writeControl     timeStep;
+        writeInterval    10;
+        writeFields      false;
+
+        name myName;
+
+        // regionType: patch/faceZone/sampledSurface
+        regionType sampledSurface;
+
+        sampledSurfaceDict
+        {
+            type                  plane;
+            planeType             pointAndNormal;
+            pointAndNormalDict
+            {
+                point  (0.503 0 0);
+                normal (1 0 0);
+            };
+            interpolate false;
+        }
+
+        // Operation: areaAverage/sum/weightedAverage/...
+        operation    sum;
+        fields
+        (
+            T U Qdot CH4 O2 CO2 H2O p
+        );
+    }
+
+    funcCourantNo
+    {
+        type CourantNo;
+        writeControl outputTime;
+        writeInterval 1;
+    }
+
+    funcPecletNo
+    {
+        type PecletNo;
+        writeControl outputTime;
+        writeInterval 1;
+    }
+
+    funcVorticity
+    {
+        type vorticity;
+        writeControl outputTime;
+        writeInterval 1;
+    }
+
+}
+
+// ************************************************************************* //

@@ -1,0 +1,70 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       polyBoundaryMesh;
+    location    "constant/polyMesh";
+    object      boundary;
+}
+
+8         
+(
+    frontAndBack_neg
+    {
+        type cyclicAMI;
+        nFaces 53410;
+        startFace 2179716;
+        matchTolerance  0.0001;
+        transform       rotational;
+        neighbourPatch  frontAndBack_pos;
+        rotationAxis    (1 0 0);
+        rotationCentre  (0 0 0);
+    }
+    frontAndBack_pos
+    {
+        type cyclicAMI;
+        nFaces 53410;
+        startFace 2233126;
+        matchTolerance  0.0001;
+        transform       rotational;
+        neighbourPatch  frontAndBack_neg;
+        rotationAxis    (1 0 0);
+        rotationCentre  (0 0 0);
+    }
+    heatedWall
+    {
+        type wall;
+        nFaces 686;
+        startFace 2286536;
+    }
+    inlet_air
+    {
+        type patch;
+        nFaces 448;
+        startFace 2287222;
+    }
+    inlet_fuel
+    {
+        type patch;
+        nFaces 140;
+        startFace 2287670;
+    }
+    nonSlipWall
+    {
+        type wall;
+        nFaces 1120;
+        startFace 2287810;
+    }
+    outlet
+    {
+        type patch;
+        nFaces 1274;
+        startFace 2288930;
+    }
+    slipHeatedWall
+    {
+        type wall;
+        nFaces 7700;
+        startFace 2290204;
+    }
+)
