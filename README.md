@@ -25,21 +25,18 @@ scripts/
     Scripts for data processing and figure generation.
 
 
-Restart field archives
-----------------------
+Final solution fields
+---------------------
 
-The final stored solution fields for the RANS and Quasi-DNS calculations are
-provided as compressed restart archives in the GitHub Release associated with
-this repository:
+The final solution fields obtained from the RANS and Quasi-DNS calculations are
+provided as compressed archives in the GitHub Release associated with this
+repository:
 
-- `RANS_restart_2.63s.tar.gz`: final stored RANS fields at t = 2.63 s.
-- `QuasiDNS_restart_0.0261s.tar.gz`: final stored Quasi-DNS fields at
-  t = 0.0261 s.
+- `2.63.tar.gz`: final solution fields from the RANS calculation.
+- `0.0261.tar.gz`: final solution fields from the Quasi-DNS calculation.
 
-Download and extract each archive in the corresponding OpenFOAM case directory
-before use. The archives create the `2.63/` and `0.0261/` time directories,
-respectively. The cases are configured to restart from the latest available
-time directory.
+After extraction in the corresponding OpenFOAM case directory, the archives
+provide the final-time directories `2.63/` and `0.0261/`, respectively.
 
 
 Scope
@@ -52,7 +49,7 @@ It also provides processed data for the principal and supplementary figures,
 together with scripts for data processing and figure generation.
 
 The complete time-resolved three-dimensional production-simulation histories
-are not included because of their storage size. Instead, the final restart
+are not included because of their storage size. Instead, the final solution
 fields are provided through the GitHub Release, and the repository includes
 the processed data required to reproduce the reported diagnostics.
 
