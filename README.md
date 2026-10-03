@@ -29,14 +29,36 @@ Final solution fields
 ---------------------
 
 The final solution fields obtained from the RANS and Quasi-DNS calculations are
-provided as compressed archives in the GitHub Release associated with this
-repository:
+provided as compressed archives with this research-data package:
 
 - `2.63.tar.gz`: final solution fields from the RANS calculation.
 - `0.0261.tar.gz`: final solution fields from the Quasi-DNS calculation.
 
 After extraction in the corresponding OpenFOAM case directory, the archives
 provide the final-time directories `2.63/` and `0.0261/`, respectively.
+
+
+Software versions
+-----------------
+
+The simulations were performed using OpenFOAM v1706. Post-processing and
+visualization were conducted using ParaView 5.12. The data-processing and
+figure-generation scripts are provided in the `scripts/` directory.
+
+
+Reproducibility
+---------------
+
+1. Use OpenFOAM v1706 and copy or extract the files in `case/` to an OpenFOAM
+   working directory.
+2. Run the calculation using the mesh, boundary conditions, operating
+   conditions, chemical-mechanism files, and numerical settings supplied in
+   the corresponding case directory.
+3. Extract `2.63.tar.gz` or `0.0261.tar.gz` in the corresponding case
+   directory when the final RANS or Quasi-DNS solution fields are required.
+4. Reproduce the reported figures and diagnostics using the processed data in
+   `data/` and the scripts in `scripts/`. The supplied fields may be visualized
+   using ParaView 5.12.
 
 
 Scope
@@ -50,8 +72,8 @@ together with scripts for data processing and figure generation.
 
 The complete time-resolved three-dimensional production-simulation histories
 are not included because of their storage size. Instead, the final solution
-fields are provided through the GitHub Release, and the repository includes
-the processed data required to reproduce the reported diagnostics.
+fields are provided as compressed archives, and the repository includes the
+processed data required to reproduce the reported diagnostics.
 
 
 Citation
